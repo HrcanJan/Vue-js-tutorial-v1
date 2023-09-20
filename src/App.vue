@@ -1,26 +1,75 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+	<h2>Nová položka</h2>
+  <input @keyup.enter="addItem" v-model="input" placeholder="Názov položky">
+	<button @click="addItem()">Pridať</button>
+  <hr>
+  <h2>Pridané položky</h2>
+	<ul>
+		<li v-for="item in validItems" :key="`item-${item.id}`">
+			<span @click="deleteItem(item)" style="margin-right: 15px">X</span>
+			{{  item.text }}
+		</li>
+  </ul>
+  <hr>
+  <h2>Zmazané položky</h2>
+  <ul>
+    <li v-for="item in deletedItems" :key="`item-${item.id}`">
+			<s>{{  item.text }}</s>
+		</li>
+	</ul>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+	data() {
+		return {
+			items: [],
+			input: ''
+		}
+	},
+
+  methods: {
+		addItem() {
+			this.items.push({
+				id: this.items.length + 1,
+				text: this.input,
+				is_deleted: false
+			})
+			this.input = ''
+		},
+
+    deleteItem(item) {
+			item.is_deleted = true
+		}
+	},
+
+	computed: {
+		validItems() {
+			return this.items.filter(item => !item.is_deleted)
+		},
+
+		deletedItems() {
+			return this.items.filter(item => item.is_deleted)
+		}
+	}
 }
 </script>
 
 <style>
+body {
+  color: white;
+  background-color: #191919;
+}
+
+button {
+  display: block;
+  margin: 2px 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
   margin-top: 60px;
 }
 </style>
